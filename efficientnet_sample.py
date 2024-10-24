@@ -10,13 +10,18 @@ import os
 from efficientnet.model import EfficientNet
 
 import argparse
+<<<<<<< HEAD
 import tensorboard
+=======
+
+>>>>>>> ac906a7 (Added parser arguments for easier custom training.)
 # some parameters
 use_gpu = torch.cuda.is_available()
 print(use_gpu)
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
+<<<<<<< HEAD
 data_dir = '../data_chest_separate/'
 num_epochs = 1
 batch_size = 4
@@ -25,6 +30,16 @@ class_num = 2
 weights_loc = ""
 lr = 0.01
 net_name = 'efficientnet-b0'
+=======
+data_dir = ''
+num_epochs = 40
+batch_size = 2
+input_size = 4
+class_num = 3
+weights_loc = ""
+lr = 0.01
+net_name = 'efficientnet-b3'
+>>>>>>> ac906a7 (Added parser arguments for easier custom training.)
 epoch_to_resume_from = 0
 momentum = 0.9
 
@@ -56,7 +71,11 @@ def loaddata(data_dir, batch_size, set_name, shuffle):
     return dataset_loaders, data_set_sizes
 
 
+<<<<<<< HEAD
 def train_model(model_ft, criterion, optimizer, lr_scheduler, num_epochs=5):
+=======
+def train_model(model_ft, criterion, optimizer, lr_scheduler, num_epochs=50):
+>>>>>>> ac906a7 (Added parser arguments for easier custom training.)
 
     train_loss = []
     since = time.time()
@@ -211,11 +230,19 @@ def run():
     print('-' * 10)
     print('Test Accuracy:')
 
+<<<<<<< HEAD
     # model_ft.load_state_dict(best_model_wts)
 
     # criterion = nn.CrossEntropyLoss().cuda()
 
     # test_model(model_ft, criterion)
+=======
+    model_ft.load_state_dict(best_model_wts)
+
+    criterion = nn.CrossEntropyLoss().cuda()
+
+    test_model(model_ft, criterion)
+>>>>>>> ac906a7 (Added parser arguments for easier custom training.)
 
 
 
@@ -224,15 +251,26 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--data-dir', type=str, default=None, help='path of /dataset/')
+<<<<<<< HEAD
     parser.add_argument('--num-epochs', type=int, default=1)
     parser.add_argument('--batch-size', type=int, default=4, help='total batch size for all GPUs')
     parser.add_argument('--img-size', type=int, default=[224, 224], help='img sizes')
     parser.add_argument('--class-num', type=int, default=2, help='class num')
+=======
+    parser.add_argument('--num-epochs', type=int, default=40)
+    parser.add_argument('--batch-size', type=int, default=4, help='total batch size for all GPUs')
+    parser.add_argument('--img-size', type=int, default=[1024, 1024], help='img sizes')
+    parser.add_argument('--class-num', type=int, default=3, help='class num')
+>>>>>>> ac906a7 (Added parser arguments for easier custom training.)
 
     parser.add_argument('--weights-loc', type=str, default= None, help='path of weights (if going to be loaded)')
 
     parser.add_argument("--lr", type=float, default= 0.01, help="learning rate")
+<<<<<<< HEAD
     parser.add_argument("--net-name", type=str, default="efficientnet-b0", help="efficientnet type")
+=======
+    parser.add_argument("--net-name", type=str, default="efficientnet-b3", help="efficientnet type")
+>>>>>>> ac906a7 (Added parser arguments for easier custom training.)
 
     parser.add_argument('--resume-epoch', type=int, default=0, help='what epoch to start from')
 
