@@ -10,21 +10,21 @@ import os
 from efficientnet.model import EfficientNet
 
 import argparse
-
+import tensorboard
 # some parameters
 use_gpu = torch.cuda.is_available()
 print(use_gpu)
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-data_dir = ''
-num_epochs = 40
-batch_size = 2
-input_size = 4
-class_num = 3
+data_dir = '../data_chest_separate/'
+num_epochs = 1
+batch_size = 4
+input_size = 224
+class_num = 2
 weights_loc = ""
 lr = 0.01
-net_name = 'efficientnet-b3'
+net_name = 'efficientnet-b0'
 epoch_to_resume_from = 0
 momentum = 0.9
 
@@ -51,12 +51,12 @@ def loaddata(data_dir, batch_size, set_name, shuffle):
     # num_workers=0 if CPU else =1
     dataset_loaders = {x: torch.utils.data.DataLoader(image_datasets[x],
                                                       batch_size=batch_size,
-                                                      shuffle=shuffle, num_workers=1) for x in [set_name]}
+                                                      shuffle=shuffle, num_workers=4) for x in [set_name]}
     data_set_sizes = len(image_datasets[set_name])
     return dataset_loaders, data_set_sizes
 
 
-def train_model(model_ft, criterion, optimizer, lr_scheduler, num_epochs=50):
+def train_model(model_ft, criterion, optimizer, lr_scheduler, num_epochs=5):
 
     train_loss = []
     since = time.time()
@@ -119,6 +119,8 @@ def train_model(model_ft, criterion, optimizer, lr_scheduler, num_epochs=50):
 
     # save best model
     save_dir = data_dir + '/model'
+    os.makedirs(os.path.dirname(save_dir), exist_ok=True)
+    # Save the model
     model_ft.load_state_dict(best_model_wts)
     model_out_path = save_dir + "/" + net_name + '.pth'
     torch.save(model_ft, model_out_path)
@@ -209,11 +211,11 @@ def run():
     print('-' * 10)
     print('Test Accuracy:')
 
-    model_ft.load_state_dict(best_model_wts)
+    # model_ft.load_state_dict(best_model_wts)
 
-    criterion = nn.CrossEntropyLoss().cuda()
+    # criterion = nn.CrossEntropyLoss().cuda()
 
-    test_model(model_ft, criterion)
+    # test_model(model_ft, criterion)
 
 
 
@@ -222,15 +224,15 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--data-dir', type=str, default=None, help='path of /dataset/')
-    parser.add_argument('--num-epochs', type=int, default=40)
+    parser.add_argument('--num-epochs', type=int, default=1)
     parser.add_argument('--batch-size', type=int, default=4, help='total batch size for all GPUs')
-    parser.add_argument('--img-size', type=int, default=[1024, 1024], help='img sizes')
-    parser.add_argument('--class-num', type=int, default=3, help='class num')
+    parser.add_argument('--img-size', type=int, default=[224, 224], help='img sizes')
+    parser.add_argument('--class-num', type=int, default=2, help='class num')
 
     parser.add_argument('--weights-loc', type=str, default= None, help='path of weights (if going to be loaded)')
 
     parser.add_argument("--lr", type=float, default= 0.01, help="learning rate")
-    parser.add_argument("--net-name", type=str, default="efficientnet-b3", help="efficientnet type")
+    parser.add_argument("--net-name", type=str, default="efficientnet-b0", help="efficientnet type")
 
     parser.add_argument('--resume-epoch', type=int, default=0, help='what epoch to start from')
 
